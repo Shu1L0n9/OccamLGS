@@ -1,7 +1,7 @@
 # Occam's LGS: A Simple Approach for Language Gaussian Splatting
 
-[![arXiv](https://img.shields.io/badge/arXiv-xxxx.xxxxx-b31b1b.svg)]()
-[![Project Page](https://img.shields.io/badge/Project-Page-blue)]()
+[![arXiv](https://img.shields.io/badge/arXiv-xxxx.xxxxx-b31b1b.svg)](https://arxiv.org/abs/2412.01807)
+[![Project Page](https://img.shields.io/badge/Project-Page-blue)](https://insait-institute.github.io/OccamLGS/)
 
 This is the official implementation of "Occam's LGS: A simple approach for Language Gaussian Splatting".
 
