@@ -56,11 +56,17 @@ class ModelParams(ParamGroup):
         self.train_test_exp = False
         self.data_device = "cuda"
         self.eval = False
+        self._language_features_name = "language_features"
+        self._feature_level = 2
         super().__init__(parser, "Loading Parameters", sentinel)
 
     def extract(self, args):
         g = super().extract(args)
         g.source_path = os.path.abspath(g.source_path)
+        try :
+            g.lf_path = os.path.join(g.source_path, g.language_features_name)
+        except:
+            pass
         return g
 
 class PipelineParams(ParamGroup):
@@ -97,6 +103,8 @@ class OptimizationParams(ParamGroup):
         self.depth_l1_weight_final = 0.01
         self.random_background = False
         self.optimizer_type = "default"
+        
+        self.include_feature =False
         super().__init__(parser, "Optimization Parameters")
 
 def get_combined_args(parser : ArgumentParser):

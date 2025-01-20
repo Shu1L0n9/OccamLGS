@@ -15,6 +15,8 @@ import numpy as np
 from utils.graphics_utils import getWorld2View2, getProjectionMatrix
 from utils.general_utils import PILtoTorch
 import cv2
+import os
+import pickle
 
 class Camera(nn.Module):
     def __init__(self, resolution, colmap_id, R, T, FoVx, FoVy, depth_params, image, invdepthmap,
@@ -87,6 +89,40 @@ class Camera(nn.Module):
         self.projection_matrix = getProjectionMatrix(znear=self.znear, zfar=self.zfar, fovX=self.FoVx, fovY=self.FoVy).transpose(0,1).cuda()
         self.full_proj_transform = (self.world_view_transform.unsqueeze(0).bmm(self.projection_matrix.unsqueeze(0))).squeeze(0)
         self.camera_center = self.world_view_transform.inverse()[3, :3]
+        
+        y, x = torch.meshgrid(torch.arange(0, self.image_height, device='cuda'), torch.arange(0, self.image_width, device='cuda'))
+        self.x = x.reshape(-1, 1)
+        self.y = y.reshape(-1, 1)
+        
+    def get_language_feature(self, language_feature_dir, feature_level):
+        
+        language_feature_name = os.path.join(language_feature_dir, self.image_name)
+        
+        seg_map = torch.from_numpy(np.load(language_feature_name + '_s.npy'))  # seg_map: torch.Size([4, 730, 988])
+        feature_map = torch.from_numpy(np.load(language_feature_name + '_f.npy')) # feature_map: torch.Size([281, 512])
+        seg_map = seg_map.cuda()
+        feature_map = feature_map.cuda()
+        
+        seg = seg_map[:, self.y, self.x].squeeze(-1).long()
+        mask = seg != -1
+        if feature_level == 0: # default
+            point_feature1 = feature_map[seg[0:1]].squeeze(0)
+            mask = mask[0:1].reshape(1, self.image_height, self.image_width)
+        elif feature_level == 1: # s
+            point_feature1 = feature_map[seg[1:2]].squeeze(0)
+            mask = mask[1:2].reshape(1, self.image_height, self.image_width)
+        elif feature_level == 2: # m
+            point_feature1 = feature_map[seg[2:3]].squeeze(0)
+            mask = mask[2:3].reshape(1, self.image_height, self.image_width)
+        elif feature_level == 3: # l
+            point_feature1 = feature_map[seg[3:4]].squeeze(0)
+            mask = mask[3:4].reshape(1, self.image_height, self.image_width)
+        else:
+            raise ValueError("feature_level=", feature_level)
+        
+        point_feature = point_feature1.reshape(self.image_height, self.image_width, -1).permute(2, 0, 1)
+       
+        return point_feature, mask
         
 class MiniCam:
     def __init__(self, width, height, fovy, fovx, znear, zfar, world_view_transform, full_proj_transform):

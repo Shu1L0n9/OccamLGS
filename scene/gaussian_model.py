@@ -63,9 +63,10 @@ class GaussianModel:
         self.optimizer = None
         self.percent_dense = 0
         self.spatial_lr_scale = 0
+        self.include_feature = False
         self.setup_functions()
 
-    def capture(self):
+    def capture_rgb(self):
         return (
             self.active_sh_degree,
             self._xyz,
@@ -471,3 +472,46 @@ class GaussianModel:
     def add_densification_stats(self, viewspace_point_tensor, update_filter):
         self.xyz_gradient_accum[update_filter] += torch.norm(viewspace_point_tensor.grad[update_filter,:2], dim=-1, keepdim=True)
         self.denom[update_filter] += 1
+        
+    def initialize_language_feature(self, gt_language_feature, gt_mask, mask, significance=None, means2D=None, feature_dim=512):
+
+        if not hasattr(self, "_language_feature"):
+            self.create_language_features(feature_dim=feature_dim)
+            self._activated_views = torch.zeros((self._xyz.shape[0]), device="cuda")
+
+        batch_y = torch.clamp(means2D[:, 1], max=gt_language_feature.shape[0] - 1)
+        batch_x = torch.clamp(means2D[:, 0], max=gt_language_feature.shape[1] - 1)
+        gt_batch_features = gt_language_feature[batch_y.long(), batch_x.long()]
+        gt_batch_mask = gt_mask[batch_y.long(), batch_x.long()] # (N,)
+        
+        if not hasattr(self, "_language_feature_weight"):
+            self._language_feature_weight = torch.zeros((self._xyz.shape[0], 1), device="cuda")
+
+        self._language_feature_weight[mask] += significance.unsqueeze(-1) * gt_batch_mask.unsqueeze(-1)
+        self._language_feature[mask] += significance.unsqueeze(-1) * gt_batch_features * gt_batch_mask.unsqueeze(-1)
+
+        self._activated_views[mask] = torch.where(
+            gt_batch_mask,
+            1,
+            self._activated_views[mask]
+        )
+        
+    def create_language_features(self, feature_dim=512):
+        self._language_feature = nn.Parameter(
+            torch.zeros((self._xyz.shape[0], feature_dim), dtype=torch.float, device="cuda").requires_grad_(True)
+        )
+        
+    def update_language_feature(self):
+        self._language_feature = self._language_feature / (self._language_feature_weight + 1e-15)
+        
+        # Filtering
+        valid_mask = self._activated_views != 0
+        self._xyz = self._xyz[valid_mask]
+        self._features_dc = self._features_dc[valid_mask]
+        self._features_rest = self._features_rest[valid_mask]
+        self._opacity = self._opacity[valid_mask]
+        self._scaling = self._scaling[valid_mask]
+        self._rotation = self._rotation[valid_mask]
+        self._language_feature = self._language_feature[valid_mask]
+        
+        print("Pruned {} points".format((~valid_mask).sum()))
