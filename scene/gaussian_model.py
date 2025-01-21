@@ -63,7 +63,6 @@ class GaussianModel:
         self.optimizer = None
         self.percent_dense = 0
         self.spatial_lr_scale = 0
-        self.include_feature = False
         self.setup_functions()
 
     def capture_rgb(self):
@@ -82,7 +81,24 @@ class GaussianModel:
             self.spatial_lr_scale,
         )
     
-    def restore(self, model_args, training_args):
+    def capture_language_feature(self):
+        return (
+            self.active_sh_degree,
+            self._xyz,
+            self._features_dc,
+            self._features_rest,
+            self._scaling,
+            self._rotation,
+            self._opacity,
+            self._language_feature,
+            self.max_radii2D,
+            self.xyz_gradient_accum,
+            self.denom,
+            self.optimizer.state_dict(),
+            self.spatial_lr_scale,
+        )
+    
+    def restore_rgb(self, model_args, training_args):
         (self.active_sh_degree, 
         self._xyz, 
         self._features_dc, 
@@ -99,7 +115,25 @@ class GaussianModel:
         self.xyz_gradient_accum = xyz_gradient_accum
         self.denom = denom
         self.optimizer.load_state_dict(opt_dict)
-
+    def restore_language_features(self, model_args, training_args):
+        (self.active_sh_degree, 
+        self._xyz, 
+        self._features_dc, 
+        self._features_rest,
+        self._scaling, 
+        self._rotation, 
+        self._opacity,
+        self._language_feature,
+        self.max_radii2D, 
+        xyz_gradient_accum, 
+        denom,
+        opt_dict, 
+        self.spatial_lr_scale) = model_args
+        self.training_setup(training_args)
+        self.xyz_gradient_accum = xyz_gradient_accum
+        self.denom = denom
+        self.optimizer.load_state_dict(opt_dict)
+        
     @property
     def get_scaling(self):
         return self.scaling_activation(self._scaling)
@@ -129,6 +163,15 @@ class GaussianModel:
     @property
     def get_opacity(self):
         return self.opacity_activation(self._opacity)
+    
+    @property
+    def get_language_feature(self):
+        
+        if self._language_feature is not None:
+            # Hard normalization
+            return torch.nn.functional.normalize(self._language_feature, dim=-1)
+        else:
+            raise ValueError('Language feature has not been set')
     
     @property
     def get_exposure(self):
@@ -473,7 +516,7 @@ class GaussianModel:
         self.xyz_gradient_accum[update_filter] += torch.norm(viewspace_point_tensor.grad[update_filter,:2], dim=-1, keepdim=True)
         self.denom[update_filter] += 1
         
-    def initialize_language_feature(self, gt_language_feature, gt_mask, mask, significance=None, means2D=None, feature_dim=512):
+    def accumulate_gaussian_feature_per_view(self, gt_language_feature, gt_mask, mask, significance=None, means2D=None, feature_dim=512):
 
         if not hasattr(self, "_language_feature"):
             self.create_language_features(feature_dim=feature_dim)
@@ -500,18 +543,13 @@ class GaussianModel:
         self._language_feature = nn.Parameter(
             torch.zeros((self._xyz.shape[0], feature_dim), dtype=torch.float, device="cuda").requires_grad_(True)
         )
-        
-    def update_language_feature(self):
+
+    def finalize_gaussian_features(self):
         self._language_feature = self._language_feature / (self._language_feature_weight + 1e-15)
         
         # Filtering
-        valid_mask = self._activated_views != 0
-        self._xyz = self._xyz[valid_mask]
-        self._features_dc = self._features_dc[valid_mask]
-        self._features_rest = self._features_rest[valid_mask]
-        self._opacity = self._opacity[valid_mask]
-        self._scaling = self._scaling[valid_mask]
-        self._rotation = self._rotation[valid_mask]
-        self._language_feature = self._language_feature[valid_mask]
+        prune_mask = self._activated_views == 0
+        self.prune_points(prune_mask)
+        self._language_feature = self._language_feature[~prune_mask]
         
-        print("Pruned {} points".format((~valid_mask).sum()))
+        print("Pruned {} points".format(prune_mask.sum()))
