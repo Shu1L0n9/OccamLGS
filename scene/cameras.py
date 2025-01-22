@@ -96,7 +96,7 @@ class Camera(nn.Module):
         
     def get_language_feature(self, language_feature_dir, feature_level):
         
-        language_feature_name = os.path.join(language_feature_dir, self.image_name)
+        language_feature_name = os.path.join(language_feature_dir, self.image_name.split('.')[0])
         
         seg_map = torch.from_numpy(np.load(language_feature_name + '_s.npy'))  # seg_map: torch.Size([4, 730, 988])
         feature_map = torch.from_numpy(np.load(language_feature_name + '_f.npy')) # feature_map: torch.Size([281, 512])

@@ -56,7 +56,7 @@ def process_scene_language_features(dataset : ModelParams, opt : OptimizationPar
 
     with torch.no_grad():
         gaussians = GaussianModel(dataset.sh_degree)
-        scene = Scene(dataset, gaussians, load_iteration=iteration, shuffle=False)
+        scene = Scene(dataset, gaussians, load_iteration=iteration, shuffle=False, include_feature=True)
 
         checkpoint = os.path.join(args.model_path, f'chkpnt{iteration}.pth')
         (model_params, _) = torch.load(checkpoint)
@@ -75,8 +75,6 @@ if __name__ == "__main__":
     opt = OptimizationParams(parser)
     parser.add_argument("--iteration", default=-1, type=int)
     parser.add_argument("--quiet", action="store_true")
-    parser.add_argument("--scene_name", default="teatime", type=str)
-    parser.add_argument("--dataset", default="lerf_ovs", type=str)
     args = get_combined_args(parser)
 
     # Initialize system state (RNG)
