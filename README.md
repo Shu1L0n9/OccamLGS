@@ -78,4 +78,4 @@ Check `run_lerf.sh` for a complete example using the "teatime" scene from LERF_O
 
 ### References
 
-For more information about feature levels and methodology, refer to the LangSplat paper.
+For more information about feature levels and feature extraction, refer to the LangSplat paper.
