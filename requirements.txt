@@ -1,0 +1,11 @@
+open-clip-torch
+plyfile
+tqdm
+opencv-python
+tensorboard
+jaxtyping
+matplotlib
+typing
+pathlib
+mediapy
+scikit-learn
