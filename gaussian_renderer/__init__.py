@@ -85,12 +85,6 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
             packed=False,
             sh_degree=sh_degree,
         )
-        
-        
-    # Apply exposure to rendered image (training only)
-    if use_trained_exp:
-        exposure = pc.get_exposure_from_name(viewpoint_camera.image_name)
-        rendered_image = torch.matmul(rendered_image.permute(1, 2, 0), exposure[:3, :3]).permute(2, 0, 1) + exposure[:3, 3,   None, None]
 
     rendered_image = render_colors[0].permute(2, 0, 1)
     radii = info["radii"].squeeze(0) # [N,]
@@ -101,7 +95,7 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
     out = {
         "render": rendered_image,
         "viewspace_points": info["means2d"],
-        "visibility_filter" : (radii > 0).nonzero(),
+        "visibility_filter" : radii > 0,
         "radii": radii,
          "info": info,
         }
