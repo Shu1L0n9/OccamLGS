@@ -56,7 +56,10 @@ lerf_ovs/
 └── scene_name/           # Name of the specific scene (e.g., teatime)
     ├── distorted/        
     ├── images/           # Contains the original, unprocessed scene images
-    ├── language_features/ # Contains pre-extracted language embeddings
+    ├── language_features/ # Pre-extracted language embeddings
+    │   ├── frame_00001_f.npy
+    │   └── frame_00001_s.npy
+    │   ├── ...
     ├── sparse/0/      
     │   ├── test.txt     # Testing image list
     │   ├── cameras.bin 
@@ -113,7 +116,7 @@ Note:  The script `gaussian_feature_extractor.py` generates three new semantic c
 - `test.txt` file in `scene_name/sparse/0/` defining test set
 
 
-#### 1. Train and Render Model
+#### 1. Train and Render RGB Gaussian Model
 ```bash
 # Train gaussian model
 python train.py -s $DATA_SOURCE_PATH -m $MODEL_OUTPUT_PATH --iterations 30000
