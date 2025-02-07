@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Occam’s LGS: A simple approach for Language Gaussian Splatting">
+  <meta name="keywords" content="3DGS, 3D Scemantic Understanding">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Occam’s LGS: A simple approach for Language Gaussian Splatting</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Occam’s LGS: A simple approach for Language Gaussian Splatting</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="">Jiahuan(Joanna) Cheng</a><sup>1, 2*</sup>,</span>
+            <span class="author-block">
+              <a href="https://jannicozaech.github.io/">Jan-Nico Zaech</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a href="https://insait.ai/prof-luc-van-gool/">Luc Van Gool</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://insait.ai/dr-danda-paudel/">Danda Pani Paudel</a><sup>2</sup>,
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Johns Hopkins University,</span>
+            <span class="author-block"><sup>2</sup>INSAIT Sofia University</span>
+          </div>
+          <div class="author-emails" style="font-size: 0.8em; margin-top: 0.5em;">
+            <span>*jcheng65@jh.edu</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2412.01807"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2412.01807"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/insait-institute/OccamLGS"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link.
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+      
+    <h2 class="subtitle has-text-centered has-text-justified">
+      TL;DR:<br>
+      🎯 We present a simple method to lift 2D language features to 3D Gaussian Splats without complex modules or training.<br>
+      🚀 Our optimization-based approach is 100x faster, works with any feature dimension, and accurately models the rendering process.
+    </h2>
+    <div class="hero-body">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <img src="./static/images/teaser.png"
+               class="interpolation-image"
+               alt="Interpolate start reference image"/>
+          <p class="has-text-centered mt-2">
+            Overview of our training-free language 3D Gaussian Splatting method, achieving SOTA performance with only 15s runtime.
+          </p>
+        </div>
+        <div class="column is-4">
+          <img src="./static/images/comparison_table.png"
+               class="interpolation-image"
+               alt="Interpolate start reference image"/>
+          <p class="has-text-centered mt-2">
+            Feature comparison with existing methods.
+          </p>
+        </div>
+      </div>
+     </div>
+  </div>
+</section>
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve has-text-centered">
+        <!-- <div class="column has-text-centered"> -->
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/teatime.mp4"
+                    type="video/mp4">
+          </video>
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/teatime_sg.mp4"
+                    type="video/mp4">
+          </video>
+          <p>Teatime</p>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/waldo_kitchen.mp4"
+                    type="video/mp4">
+          </video>
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/waldo_kitchen_sg.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/figurines.mp4"
+                    type="video/mp4">
+          </video>
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/figurines_sg.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/ramen.mp4"
+                    type="video/mp4">
+          </video>
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/ramen_sg.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/bouquet.mp4"
+                    type="video/mp4">
+          </video>
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/bouquet_sg.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shoe_rack.mp4"
+                    type="video/mp4">
+          </video>
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shoe_rack_sg.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <p class="subtitle is-7 extra-small">*Visualization: SAM+CLIP features, reduced to 3-dimension via LangSplat autoencoder for visualization purpose, uplifted to 3D
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            In this work, we show that the sophisticated techniques for language-grounded 3D Gaussian Splatting are simply
+            unnecessary. Instead, we apply Occam's razor to the task at hand and perform weighted multi-view feature aggregation
+            using the weights derived from the standard rendering process, followed by a simple heuristic-based noisy Gaussian 
+            filtration. Doing so offers us state-of-the-art results with a speed-up of two orders of magnitude. We showcase our 
+            results in two commonly used benchmark datasets: LERF and 3D-OVS. Our simple approach allows us to perform reasoning directly 
+            in the language features, without any compression whatsoever. Such modeling in turn offers easy scene manipulation, unlike the 
+            existing methods -- which we illustrate using an application of object insertion in the scene. Furthermore, we provide a thorough 
+            discussion regarding the significance of our contributions within the context of the current literature. Our source code will be made publicly available. 
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <h2 class="title is-3">Contribution</h2>
+
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+              <!--     <img src="./static/images/comparison_table.png"
+              class="interpolation-image"
+              style="max-width: 60%;"
+              alt="Interpolate start reference image"/>
+        
+              <div class="content has-text-justified">
+                <p class="mb-4">
+                    Our approach challenges the necessity of complex modules to lift 2D language features to Gaussian Splats, resulting in a simple, fast, yet effective method. Our contributions can be summarized as follows:
+                </p>
+                <div class="ml-4">
+                    <ul>
+                        <li>
+                            A training-free global optimization approach for Language 3D Gaussian Splatting, improving speed by two orders of magnitude.
+                        </li>
+                        <li>
+                            A reasoning by rendering approach that avoids expensive feature rendering by accurately modeling the Language 3D Gaussian Splatting forward process.
+                        </li>
+                        <li>
+                            Compatibility with arbitrary language feature dimensionality, without requiring feature compression.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+
+    <!-- abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <h2 class="title is-3">Approach</h2>
+        <div class="hero-body">
+          <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+                  <img src="./static/images/approach.png"
+              class="interpolation-image"
+              alt="Interpolate start reference image"/>
+        </div>
+        <div class="content has-text-justified">
+        <p>
+          <b>Overview</b>: Occam's LGS consists of three stages: (1) Forward rendering with 3D Gaussian Splatting to obtain opacity α,
+           projected positions x<sub>i</sub>' and pixels p<sub>i</sub>, (2) Weighted aggregation of multi-view semantic features 
+           via alpha blending, and (3) Filtering of invisible Gaussians
+        </p>
+      </div>
+      </div>
+    </div>
+    <!--/ abstract. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Visualizations. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width ">
+        <h2 class="title is-3">More Visualizations</h2>
+
+        <h3 class="title is-4">Visualization of LERF Queries</h3>
+        <div class="container is-max-desktop">
+          <div class="carousel carousel-query" id="carousel-query">
+            <div class="card">
+              <video 
+                id="figurines_query"
+                autoplay 
+                controls 
+                muted 
+                loop >
+                <source src="./static/videos/figurines_query.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="card">
+              <video 
+                id="teatime_query"
+                autoplay 
+                controls 
+                muted 
+                loop >
+                <source src="./static/videos/teatime_query.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="card">
+              <video 
+                id="ramen_query"
+                autoplay 
+                controls 
+                muted 
+                loop >
+                <source src="./static/videos/ramen_query.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="card">
+              <video 
+                id="waldo_query"
+                autoplay 
+                controls 
+                muted 
+                loop >
+                <source src="./static/videos/waldo_kitchen_query.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="card">
+              <video 
+                id="bouquet_query"
+                autoplay 
+                controls 
+                muted 
+                loop >
+                <source src="./static/videos/bouquet_query.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="card">
+              <video 
+                id="shoe_rack_query"
+                autoplay 
+                controls 
+                muted 
+                loop >
+                <source src="./static/videos/shoe_rack_query.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+      </div>
+
+
+        <h3 class="title is-4">Comparison</h3>
+        <div class="content has-text-justified">
+          <p>
+            We show the comparison with other works.  
+          </p>
+        </div>
+        <img src="./static/images/comparison_vis.png"
+                 class="interpolation-image mb-2"
+                 alt="Interpolate start reference image"/>
+
+        <!-- 3D-OVS. -->
+        <h3 class="title is-4">3D-OVS Dataset</h3>
+        <div class="content has-text-justified">
+          <p>
+            We also show the visualization of the relevancy map for the 3D-OVS dataset. 
+          </p>
+        </div>
+        <div class="column is-narrow">
+          <div class="has-text-centered">
+            <img src="./static/images/room.png"
+                 class="interpolation-image mb-2"
+                 alt="Interpolate start reference image"/>
+            <p class="mb-4">Room Scene</p>
+            
+            <img src="./static/images/bench.png"
+                 class="interpolation-image mb-2"
+                 alt="Interpolate start reference image"/>
+            <p class="mb-4">Bench Scene</p>
+            
+            <img src="./static/images/lawn.png"
+                 class="interpolation-image mb-2"
+                 alt="Interpolate start reference image"/>
+            <p>Lawn Scene</p>
+          </div>
+        </div>
+
+        <!--/ 3D-OVS. -->
+
+        <!-- Re-rendering. -->
+        <h3 class="title is-4">Application: Object insertion</h3>
+        <div class="content has-text-justified">
+          <p>
+            We select and extract an "Pocelain hand" and "Waldo" (represented by its Gaussians) from the Figurines scene of LERF. 
+            By simply copying the object's Gaussians together with their parameters and semantic features, the new object seamlessly 
+            integrates into the Teatime scene while preserving its semantic features.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <img src="./static/images/figurines-insertion.png"
+            class="interpolation-image mb-2"
+            alt="Interpolate start reference image"/>
+            <div class="columns is-centered">
+              <div class="column is-half">
+                <video id="replay-video-1"
+                       controls
+                       muted
+                       preload
+                       autoplay
+                       width="100%">
+                  <source src="./static/videos/insertion_vg.mp4"
+                          type="video/mp4">
+                </video>
+              </div>
+              <div class="column is-half">
+                <video id="replay-video-2"
+                       controls
+                       muted
+                       preload
+                       autoplay
+                       width="100%">
+                  <source src="./static/videos/insertion_query.mp4"
+                          type="video/mp4">
+                </video>
+              </div>
+            </div>
+        </div>
+        <!--/ Re-rendering. -->
+
+      </div>
+    </div>
+    <!--/ Animation. -->
+
+
+   
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{cheng2024occamslgssimpleapproach,
+  title={Occam's LGS: A Simple Approach for Language Gaussian Splatting}, 
+  author={Jiahuan Cheng and Jan-Nico Zaech and Luc Van Gool and Danda Pani Paudel},
+  year={2024},
+  eprint={2412.01807}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            The souce code and template are borrowed from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<div class="clustr">
+  <script type="text/javascript" id="clustrmaps" class="hidden" src="//clustrmaps.com/map_v2.js?d=4m8fDY1r0KBc51xL6NoifMVIqmw_Exyzzlpvkg1C57c&cl=ffffff&w=a"></script>
+</div>
+
+</body>
+</html>
