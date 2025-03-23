@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="description"
-        content="Occam’s LGS: A simple approach for Language Gaussian Splatting">
+        content="Occam’s LGS: An efficient approach for Language Gaussian Splatting">
   <meta name="keywords" content="3DGS, 3D Scemantic Understanding">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Occam’s LGS: A simple approach for Language Gaussian Splatting</title>
@@ -252,14 +252,16 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            In this work, we show that the sophisticated techniques for language-grounded 3D Gaussian Splatting are simply
-            unnecessary. Instead, we apply Occam's razor to the task at hand and perform weighted multi-view feature aggregation
-            using the weights derived from the standard rendering process, followed by a simple heuristic-based noisy Gaussian 
-            filtration. Doing so offers us state-of-the-art results with a speed-up of two orders of magnitude. We showcase our 
-            results in two commonly used benchmark datasets: LERF and 3D-OVS. Our simple approach allows us to perform reasoning directly 
-            in the language features, without any compression whatsoever. Such modeling in turn offers easy scene manipulation, unlike the 
-            existing methods -- which we illustrate using an application of object insertion in the scene. Furthermore, we provide a thorough 
-            discussion regarding the significance of our contributions within the context of the current literature. Our source code will be made publicly available. 
+            TL;DR: Gaussian Splatting is a widely adopted approach for 3D scene representation, offering efficient, high-quality 
+            reconstruction and rendering. A key reason for its success is the simplicity of representing scenes with sets of Gaussians,
+            making it interpretable and adaptable. To enhance understanding beyond visual representation, recent approaches extend Gaussian 
+            Splatting with semantic vision-language features, enabling open-set tasks. Typically, these language features are aggregated from
+            multiple 2D views, however, existing methods rely on cumbersome techniques, resulting in high computational costs and longer training times.
+            <br><br>
+            In this work, we show that the complicated pipelines for language 3D Gaussian Splatting are simply unnecessary.
+            Instead, we follow a probabilistic formulation of Language Gaussian Splatting and apply Occam’s razor to the task
+            at hand, leading to a highly efficient weighted multi-view feature aggregation technique. Doing so offers us state-ofthe-art 
+            results with a speed-up of two orders of magnitude without any compression, allowing for easy scene manipulation 
           </p>
         </div>
       </div>

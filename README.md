@@ -1,9 +1,9 @@
-# Occam's LGS: A Simple Approach for Language Gaussian Splatting
+# Occam's LGS: An Efficient Approach for Language Gaussian Splatting
 
 [![arXiv](https://img.shields.io/badge/arXiv-2412.01807-b31b1b.svg)](https://arxiv.org/abs/2412.01807)
 [![Project Page](https://img.shields.io/badge/Project-Page-blue)](https://insait-institute.github.io/OccamLGS/)
 
-This is the official implementation of "Occam's LGS: A simple approach for Language Gaussian Splatting".
+This is the official implementation of "Occam's LGS: An Efficient Approach for Language Gaussian Splatting".
 
 ## Overview
 
@@ -134,20 +134,40 @@ python gaussian_feature_extractor.py -m $MODEL_OUTPUT_PATH --iteration 30000 --e
 python feature_map_renderer.py -m $MODEL_OUTPUT_PATH --iteration 30000 --eval --feature_level 1
 ```
 ### Example Pipeline
-Check `run_lerf.sh` for a complete example using the "teatime" scene from LERF_OVS dataset
+Check `run_lerf.sh` for a complete example using the "teatime" scene from LERF_OVS dataset and `run_3DOVS.sh` for a complete example using the "bench" scene from 3D-OVS dataset.
 
 ## Evaluation
 ### LERF
 We follow the evaluation methodology established by LangSplat for our LERF assessments. For detailed information about the evaluation metrics and procedures, please refer to the LangSplat methodology.
 
 ### 3DOVS
-The evaluation protocol for 3DOVS will be released in future updates. For current information about evaluation methods and metrics, please refer to the supplementary materials of our paper.
+Here is the instructions on how to evaluate 3DOVS Dataset.
+1. Configure Parameters: Open `eval_3DOVS.sh` and adjust the following:
+    - `DATASET_NAME`: Set to your 3DOVS dataset split (e.g., "bench")
+    - `GT_FOLDER`: Path to your preprocessed 3DOVS data
+    - `FEAT_FOLDER_NAME`: Name of your model's feature output folder
+2. Run the evaluation script
+```bash
+sh eval_3DOVS.sh
+```
+3. View Results: Evaluation metrics and visualizations will be saved to the `/eval_results` directory
+
+**Configuration Options**
+
+The evaluation script supports several parameters:
+
+- `--stability_thresh`: Threshold for stability analysis (default: 0.4)
+- `--min_mask_size`: Minimum valid mask size (default: 0.005)
+- `--max_mask_size`: Maximum valid mask size (default: 0.9)
+
+For detailed information about our evaluation methodology, please refer to the supplementary materials in our paper.
+
 
 ## TODO
 - [x] Training and rendering code released
 - [x] GSplat rasterizer code released
+- [x] Evaluation code to be released
 - [ ] Corrected room scene labels to be released
-- [ ] Evaluation code to be released
 - [ ] Autoencoder for any-dimensional feature to be released
 
 
