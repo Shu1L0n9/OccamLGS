@@ -28,10 +28,6 @@ import time
 
 
 def extract_gaussian_features(model_path, iteration, source_path, views, gaussians, pipeline, background, feature_level):
-    
-   
-    # save_path = f"/scratch/joanna_cheng/{model_path.split('/')[-1]}" #!!!! saved path
-    # folder_name = f"{save_name}_{feature_level}" #!!!! folder name
 
     language_feature_save_path = os.path.join(model_path, f'chkpnt{iteration}_langfeat_{feature_level}.pth')
     

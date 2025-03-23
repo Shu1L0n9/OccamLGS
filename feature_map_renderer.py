@@ -30,13 +30,13 @@ def render_set(model_path, name, iteration, source_path, views, gaussians, pipel
     save_path = os.path.join(model_path, name, "ours_{}_langfeat_{}".format(iteration, feature_level))
     render_path = os.path.join(save_path, "renders")
     gts_path = os.path.join(save_path, "gt")
-    # render_npy_path = os.path.join(save_path, "renders_npy")
-    # gts_npy_path = os.path.join(save_path,"gt_npy")
+    render_npy_path = os.path.join(save_path, "renders_npy")
+    gts_npy_path = os.path.join(save_path,"gt_npy")
     
     os.makedirs(render_path, exist_ok=True)
     os.makedirs(gts_path, exist_ok=True)
-    # os.makedirs(render_npy_path, exist_ok=True)
-    # os.makedirs(gts_npy_path, exist_ok=True)
+    os.makedirs(render_npy_path, exist_ok=True)
+    os.makedirs(gts_npy_path, exist_ok=True)
     
     
     for idx, view in enumerate(tqdm(views, desc="Rendering progress")):
@@ -44,8 +44,8 @@ def render_set(model_path, name, iteration, source_path, views, gaussians, pipel
         rendering = render_pkg["render"]
         gt, mask = view.get_language_feature(language_feature_dir=f"{source_path}/language_features", feature_level=feature_level) #! modified
         
-        # np.save(os.path.join(render_npy_path, view.image_name + ".npy"),rendering.permute(1,2,0).cpu().numpy())
-        # np.save(os.path.join(gts_npy_path, view.image_name + ".npy"),gt.permute(1,2,0).cpu().numpy())
+        np.save(os.path.join(render_npy_path, view.image_name.split('.')[0] + ".npy"),rendering.permute(1,2,0).cpu().numpy())
+        np.save(os.path.join(gts_npy_path, view.image_name.split('.')[0] + ".npy"),gt.permute(1,2,0).cpu().numpy())
         
         _, H, W = gt.shape
         gt = gt.reshape(512, -1).T.cpu().numpy()
