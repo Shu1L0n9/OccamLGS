@@ -170,7 +170,8 @@ For detailed information about our evaluation methodology, please refer to the s
 - [ ] Corrected room scene labels to be released
 - [ ] Autoencoder for any-dimensional feature to be released
 
-
+## Acknowledgement
+Our code is built on [LangSplat](https://github.com/minghanqin/LangSplat), [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), and [gsplat](https://github.com/nerfstudio-project/gsplat). We gratefully appreciate their open source contribution!
 
 ## BibTeX
 
