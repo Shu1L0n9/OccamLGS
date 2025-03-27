@@ -6,7 +6,7 @@
         content="Occam’s LGS: An efficient approach for Language Gaussian Splatting">
   <meta name="keywords" content="3DGS, 3D Scemantic Understanding">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Occam’s LGS: A simple approach for Language Gaussian Splatting</title>
+  <title>Occam’s LGS: An Efficient Approach for Language Gaussian Splatting</title>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
@@ -57,7 +57,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Occam’s LGS: A simple approach for Language Gaussian Splatting</h1>
+          <h1 class="title is-1 publication-title">Occam’s LGS: An Efficient Approach for Language Gaussian Splatting</h1>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
               <a href="">Jiahuan(Joanna) Cheng</a><sup>1, 2*</sup>,</span>
@@ -309,15 +309,16 @@
         <div class="hero-body">
           <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
                   frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
-                  <img src="./static/images/approach.png"
+                  <img src="./static/images/overview.png"
               class="interpolation-image"
               alt="Interpolate start reference image"/>
         </div>
         <div class="content has-text-justified">
         <p>
-          <b>Overview</b>: Occam's LGS consists of three stages: (1) Forward rendering with 3D Gaussian Splatting to obtain opacity α,
-           projected positions x<sub>i</sub>' and pixels p<sub>i</sub>, (2) Weighted aggregation of multi-view semantic features 
-           via alpha blending, and (3) Filtering of invisible Gaussians
+          <b>Overview</b>: Occam's LGS consists of two main stages: (1) Forward rendering with 3D Gaussian Splatting to obtain alpha blending weights w,
+           projected positions x<sub>i</sub>' and pixels p<sub>i</sub>, followed by
+           weighted aggregation of multi-view semantic features and (2) Filtering of noisy Gaussians
+           
         </p>
       </div>
       </div>
