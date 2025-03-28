@@ -67,7 +67,7 @@ def eval_gt_3dovsdata(dataset_folder: Union[str, Path] = None, ouput_path: Path 
     
     gt_paths = [os.path.join(gt_folder, name) for name in os.listdir(gt_folder) if os.path.isdir(os.path.join(gt_folder, name))]
     gt_paths = sorted(gt_paths, key=lambda x: int(x.split('/')[-1]))
-    img_paths = []
+    img_paths = {}
     with open(os.path.join(gt_folder, 'classes.txt'), 'r') as f:
         class_names = [line.strip() for line in f]
         
@@ -77,7 +77,7 @@ def eval_gt_3dovsdata(dataset_folder: Union[str, Path] = None, ouput_path: Path 
         
         idx = int(gt_path.split('/')[-1])
         img_path = os.path.join(image_folder, f"{gt_path.split('/')[-1]}.jpg")
-        img_paths.append(img_path)
+        img_paths[idx] = img_path
         with Image.open(img_path) as img:
             w, h = img.size
 
@@ -100,11 +100,9 @@ def eval_gt_3dovsdata(dataset_folder: Union[str, Path] = None, ouput_path: Path 
 
 
 def activate_stream(sem_map, 
-                    image, 
                     clip_model, 
                     image_name: Path = None,
                     img_ann: Dict = None, 
-                    colormap_options = None,
                     eval_params: Dict = None):
     
     valid_map = clip_model.get_max_across(sem_map)
@@ -152,20 +150,25 @@ def activate_stream(sem_map,
 def evaluate(feat_dir, output_path, gt_path, logger, eval_params):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    colormap_options = colormaps.ColormapOptions(
-        colormap="turbo",
-        normalize=True,
-        colormap_min=-1.0,
-        colormap_max=1.0,
-    )
+    # colormap_options = colormaps.ColormapOptions(
+    #     colormap="turbo",
+    #     normalize=True,
+    #     colormap_min=-1.0,
+    #     colormap_max=1.0,
+    # )
 
     gt_ann, image_shape, image_paths = eval_gt_3dovsdata(Path(gt_path), Path(output_path))
      
     eval_index_list = [int(idx) for idx in list(gt_ann.keys())]
     feat_paths_lvl = []   
     for i in range(len(feat_dir)):
-        feat_paths_lvl.append(sorted(glob.glob(os.path.join(feat_dir[i], '*.npy')),
-                            key=lambda file_name: int(os.path.basename(file_name).split(".npy")[0])))
+        # Create a mapping of index to file path
+        index_to_file = {}
+        for file_path in glob.glob(os.path.join(feat_dir[i], '*.npy')):
+            file_idx = int(os.path.basename(file_path).split(".npy")[0])
+            index_to_file[file_idx] = file_path
+        
+        feat_paths_lvl.append(index_to_file)
     
     assert len(feat_paths_lvl) == len(feat_dir)   
     
@@ -179,23 +182,23 @@ def evaluate(feat_dir, output_path, gt_path, logger, eval_params):
         
         compressed_sem_feats = np.zeros((len(feat_dir), *image_shape, 512), dtype=np.float32) # compressed_sem_feats: (3, 7, 731, 988, 3) -> (granuity, num_frames, h, w, c)
         for i in range(len(feat_dir)):
-            compressed_sem_feats[i] = np.load(feat_paths_lvl[i][j], mmap_mode='r')
+            if idx not in feat_paths_lvl[i]:
+                raise ValueError(f"Missing feature file for index {idx} in directory {feat_dir[i]}")
+            compressed_sem_feats[i] = np.load(feat_paths_lvl[i][idx], mmap_mode='r')
         
         sem_feat = torch.from_numpy(compressed_sem_feats).float().to(device)
-        rgb_img = cv2.imread(image_paths[j])[..., ::-1]
-        rgb_img = (rgb_img / 255.0).astype(np.float32)
-        rgb_img = torch.from_numpy(rgb_img).to(device)
-        print(f"j: {j}, idx: {idx}, image_name: {image_name}, image_path: {image_paths[j]}") 
+        # rgb_img = cv2.imread(image_paths[idx])[..., ::-1]
+        # rgb_img = (rgb_img / 255.0).astype(np.float32)
+        # rgb_img = torch.from_numpy(rgb_img).to(device)
+        print(f"j: {j}, idx: {idx}, image_name: {image_name}, image_path: {image_paths[idx]}") 
         
         img_ann = gt_ann[f'{idx}'] # -> a dictionary of labels, with key as path to mask
         clip_model.set_positives(list(img_ann.keys()))
         
-        c_iou_list, c_lvl = activate_stream(sem_feat, rgb_img, clip_model, 
+        c_iou_list, c_lvl = activate_stream(sem_feat, clip_model, 
                                             image_name, img_ann,
-                                            colormap_options=colormap_options,
                                             eval_params=eval_params)
 
-        
         chosen_iou_all.extend(c_iou_list)
         chosen_lvl_list.extend(c_lvl)
 
