@@ -8,6 +8,8 @@
 #
 # For inquiries contact  george.drettakis@inria.fr
 #
+import warnings
+warnings.filterwarnings("ignore", message="torch.meshgrid: in an upcoming release")
 
 import torch
 from scene import Scene
