@@ -4,9 +4,6 @@
 [submodule "submodules/fused-ssim"]
 	path = submodules/fused-ssim
 	url = https://github.com/rahul-goel/fused-ssim.git
-[submodule "submodules/simple-knn"]
-	path = submodules/simple-knn
-	url = https://gitlab.inria.fr/bkerbl/simple-knn.git
 [submodule "SIBR_viewers"]
 	path = SIBR_viewers
 	url = https://gitlab.inria.fr/sibr/sibr_core.git
@@ -16,3 +13,6 @@
 [submodule "submodules/segment-anything-langsplat"]
 	path = submodules/segment-anything-langsplat
 	url = https://github.com/minghanqin/segment-anything-langsplat
+[submodule "submodules/simple-knn"]
+	path = submodules/simple-knn
+	url = https://github.com/camenduru/simple-knn.git
