@@ -26,26 +26,12 @@ We use the following setting to run OccamLGS:
 
 ### Clone Repository
 ```bash
-git clone git@github.com:JoannaCCJH/occamlgs.git --recursive
+git clone https://github.com/shu1l0n9/occamlgs.git --recursive
 ```
 
 ### Environment Setup
 ```bash
-micromamba create -n occamlgs python=3.10
-micromamba activate occamlgs
-pip install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu121
-```
-
-### Project Dependencies
-```bash
-pip install -r requirements.txt
-micromamba install -c conda-forge gxx=11.4.0
-```
-
-### Submodules
-```bash
-pip install -e submodules/gsplat[dev]
-pip install -e submodules/simple-knn
+conda env create -f environment.yml
 ```
 
 ## Dataset Preparation
