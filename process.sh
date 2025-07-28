@@ -1,10 +1,12 @@
 #!/bin/bash
 
 dataset_path="data/lerf_ovs/"
-dataset_name="ramen"
+dataset_names=("ramen" "teatime" "figurines" "waldo_kitchen")
 
 # get the language feature of the scene
-python preprocess.py --dataset_path "${dataset_path}${dataset_name}"
+for dataset_name in "${dataset_names[@]}"; do
+    python preprocess.py --dataset_path "${dataset_path}${dataset_name}"
+done
 
 # # train the autoencoder
 # cd autoencoder
