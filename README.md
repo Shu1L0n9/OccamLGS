@@ -69,6 +69,7 @@ lerf_ovs/
 ```
 Notes:
 - Language features are pre-extracted and stored as 512-dimensional vectors
+- ```bash process.sh``` script is provided to preprocess the dataset and extract language features from the images
 - For detailed information about feature levels and language feature extraction methodology, please refer to the [LangSplat repository](https://github.com/minghanqin/LangSplat). 
 
 ### Output Directory Structure

@@ -184,3 +184,4 @@ dependencies:
       - submodules/simple-knn
       - submodules/fused-ssim
       - submodules/gsplat[dev]
+      - submodules/segment-anything-langsplat

@@ -15,6 +15,8 @@ import math
 from scene.gaussian_model import GaussianModel
 from utils.sh_utils import eval_sh
 from gsplat import rasterization
+import warnings
+warnings.filterwarnings("ignore", message="torch.meshgrid: in an upcoming release")
 
 def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, scaling_modifier = 1.0, separate_sh = False, override_color = None, use_trained_exp=False, include_feature = False):
     """
