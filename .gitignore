@@ -7,3 +7,4 @@ tensorboard_3d
 screenshots
 ckpts
 eval_results
+*/__pycache__/
