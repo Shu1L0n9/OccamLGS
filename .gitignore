@@ -5,5 +5,5 @@ data
 build
 tensorboard_3d
 screenshots
-eval_results
 ckpts
+eval_results
